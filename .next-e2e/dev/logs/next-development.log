@@ -1,0 +1,18 @@
+{"timestamp":"00:00:03.299","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:03.301","source":"Server","level":"LOG","message":"  We detected TypeScript in your project and reconfigured your tsconfig.json file for you."}
+{"timestamp":"00:00:03.301","source":"Server","level":"LOG","message":"  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:\n"}
+{"timestamp":"00:00:03.302","source":"Server","level":"LOG","message":"  \t- include was updated to add '.next-e2e/types/**/*.ts'"}
+{"timestamp":"00:00:03.302","source":"Server","level":"LOG","message":"  \t- include was updated to add '.next-e2e/dev/types/**/*.ts'"}
+{"timestamp":"00:00:03.302","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:03.563","source":"Server","level":"LOG","message":""}
+{"timestamp":"00:00:04.971","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:00:06.622","source":"Server","level":"LOG","message":"○ Compiling /page ..."}
+{"timestamp":"00:00:20.130","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:00:20.668","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
+{"timestamp":"00:00:20.801","source":"Browser","level":"ERROR","message":"Uncaught Error: Internal Next.js error: Router action dispatched before initialization."}
+{"timestamp":"00:00:20.803","source":"Server","level":"ERROR","message":"[browser] \"Uncaught Error: Internal Next.js error: Router action dispatched before initialization.\""}
+{"timestamp":"00:01:19.533","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:01:30.269","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:01:55.226","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:02:02.740","source":"Server","level":"LOG","message":"  Reload env: .env.local"}
+{"timestamp":"00:02:23.053","source":"Browser","level":"INFO","message":"Download the React DevTools for a better development experience: https://react.dev/link/react-devtools"}
