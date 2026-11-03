@@ -87,25 +87,27 @@ export function EventSettings({
             </label>
           </div>
         )}
-        <label className="field">
-          Inscrições até
+        <fieldset className="field date-time-field">
+          <legend>Inscrições até</legend>
           <DateTimeInput
             id="settings-deadline"
+            label="Inscrições até"
             required
             value={value.deadline}
             onChange={(v) => update('deadline', v)}
           />
           <small>Reabrir exige um prazo futuro e um novo sorteio se já houver resultado.</small>
-        </label>
-        <label className="field">
-          Data e hora do encontro
+        </fieldset>
+        <fieldset className="field date-time-field">
+          <legend>Data e hora do encontro</legend>
           <DateTimeInput
             id="settings-exchange"
+            label="Data e hora do encontro"
             required
             value={value.exchangeAt}
             onChange={(v) => update('exchangeAt', v)}
           />
-        </label>
+        </fieldset>
         <label className="field">
           Local
           <input

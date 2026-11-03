@@ -309,25 +309,27 @@ export function CreateEvent() {
                       />
                     </label>
                   )}
-                  <label className="field">
-                    Inscrições até *
+                  <fieldset className="field date-time-field">
+                    <legend>Inscrições até *</legend>
                     <DateTimeInput
                       id="create-deadline"
+                      label="Inscrições até"
                       required
                       value={draft.deadline}
                       onChange={(value) => change('deadline', value)}
                     />
                     <small>Depois desse horário, a lista fecha automaticamente.</small>
-                  </label>
-                  <label className="field">
-                    Data e hora do encontro *
+                  </fieldset>
+                  <fieldset className="field date-time-field">
+                    <legend>Data e hora do encontro *</legend>
                     <DateTimeInput
                       id="create-exchange"
+                      label="Data e hora do encontro"
                       required
                       value={draft.exchangeAt}
                       onChange={(value) => change('exchangeAt', value)}
                     />
-                  </label>
+                  </fieldset>
                   <label className="field">
                     Onde vai ser? <span className="muted">(opcional)</span>
                     <input

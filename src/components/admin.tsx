@@ -18,7 +18,6 @@ import {
 import { api, TYPE_NAMES, type AdminData, type Person } from '@/lib/client';
 import {
   Badge,
-  Confirm,
   CopyButton,
   EmptyError,
   EventSummary,
@@ -29,6 +28,7 @@ import {
   useResource,
 } from './ui';
 import { Button } from './controls';
+import { confirmAction } from '@/lib/confirm';
 import { ParticipantForm } from './participant-form';
 import { EventSettings } from './event-settings';
 type Confirmation = { action: string; title: string; text: string; phrase: string; id?: string };
@@ -40,8 +40,7 @@ export function Admin({ token }: { token: string }) {
     [notice, setNotice] = useState(''),
     [actionError, setActionError] = useState(''),
     [busy, setBusy] = useState(false);
-  const [confirmation, setConfirmation] = useState<Confirmation | null>(null),
-    [form, setForm] = useState<{ person?: Person } | null>(null),
+  const [form, setForm] = useState<{ person?: Person } | null>(null),
     [rule, setRule] = useState({ a: '', b: '' });
   if (error) return <EmptyError message={error} />;
   if (!data) return <Loading />;
@@ -89,7 +88,22 @@ export function Admin({ token }: { token: string }) {
   }
   const prompt = (value: Confirmation) => {
     setActionError('');
-    setConfirmation(value);
+    void confirmAction({
+      title: value.title,
+      text: value.text,
+      confirmButtonText:
+        {
+          remove: 'Remover participante',
+          end: 'Encerrar evento',
+          delete: 'Excluir evento',
+          start: 'Começar sorteio',
+          redraw: 'Reiniciar sorteio',
+          reopen: 'Reabrir inscrições',
+        }[value.action] || 'Confirmar',
+      destructive: value.action !== 'start',
+      // Mantém o contrato da API; a pessoa confirma apenas pelo botão.
+      onConfirm: () => run({ action: value.action, id: value.id, confirmation: value.phrase }),
+    });
   };
   const personName = (id: string) =>
     participants.find((p) => p.id === id)?.name || 'Pessoa removida';
@@ -103,7 +117,7 @@ export function Admin({ token }: { token: string }) {
         <Badge status={event.status} />
       </PageTop>
       {notice && <Notice>{notice}</Notice>}
-      {actionError && !confirmation && <Notice error>{actionError}</Notice>}
+      {actionError && <Notice error>{actionError}</Notice>}
       <div className="dashboard-summary">
         {[
           [Users, participants.length, 'Pessoas na turma'],
@@ -545,27 +559,6 @@ export function Admin({ token }: { token: string }) {
             }}
           />
         </Modal>
-      )}
-      {confirmation && (
-        <Confirm
-          {...confirmation}
-          busy={busy}
-          error={actionError}
-          onClose={() => {
-            if (!busy) {
-              setConfirmation(null);
-              setActionError('');
-            }
-          }}
-          onConfirm={async (phrase) => {
-            try {
-              await run({ action: confirmation.action, id: confirmation.id, confirmation: phrase });
-              setConfirmation(null);
-            } catch (e) {
-              setActionError((e as Error).message);
-            }
-          }}
-        />
       )}
     </div>
   );

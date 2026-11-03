@@ -3,12 +3,12 @@ import { Button } from './controls';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Gift, Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import { confirmAction } from '@/lib/confirm';
 import { date, type SavedEvent } from '@/lib/client';
-import { Confirm, CopyButton, PageTop } from './ui';
+import { CopyButton, PageTop } from './ui';
 export function SavedEvents() {
   const [events, setEvents] = useState<SavedEvent[]>([]),
-    [ready, setReady] = useState(false),
-    [forget, setForget] = useState<SavedEvent | null>(null);
+    [ready, setReady] = useState(false);
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem('entre-nos-events') || '[]');
@@ -72,7 +72,22 @@ export function SavedEvents() {
                   Abrir painel <ArrowUpRight size={16} />
                 </Link>
                 <CopyButton value={e.invitePath} label="Copiar convite" />
-                <Button className="text-link" onClick={() => setForget(e)}>
+                <Button
+                  className="text-link"
+                  onClick={() =>
+                    void confirmAction({
+                      title: 'Esquecer o acesso neste navegador?',
+                      text: 'O evento continuará existindo. Certifique-se de ter guardado seu link de administração em outro lugar.',
+                      confirmButtonText: 'Esquecer atalho',
+                      destructive: true,
+                      onConfirm: async () => {
+                        const updated = events.filter((saved) => saved.adminPath !== e.adminPath);
+                        localStorage.setItem('entre-nos-events', JSON.stringify(updated));
+                        setEvents(updated);
+                      },
+                    })
+                  }
+                >
                   <Trash2 size={12} />
                   Esquecer este atalho
                 </Button>
@@ -80,20 +95,6 @@ export function SavedEvents() {
             ))}
           </div>
         ))}
-      {forget && (
-        <Confirm
-          title="Esquecer o acesso neste navegador?"
-          text="O evento continuará existindo. Certifique-se de ter guardado seu link de administração em outro lugar."
-          phrase="ESQUECER"
-          onClose={() => setForget(null)}
-          onConfirm={async () => {
-            const updated = events.filter((e) => e.adminPath !== forget.adminPath);
-            localStorage.setItem('entre-nos-events', JSON.stringify(updated));
-            setEvents(updated);
-            setForget(null);
-          }}
-        />
-      )}
     </div>
   );
 }

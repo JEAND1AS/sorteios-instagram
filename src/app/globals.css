@@ -1067,6 +1067,9 @@ legend {
   height: 16px;
 }
 .modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--paper);
@@ -1074,7 +1077,7 @@ legend {
   padding: 28px;
   width: calc(100% - 32px);
   max-width: 590px;
-  max-height: 90vh;
+  max-height: calc(100dvh - 32px);
   overflow: auto;
   box-shadow: 0 20px 80px #12211530;
 }
@@ -1958,20 +1961,54 @@ legend {
   padding: 6px;
   background: white;
 }
+.date-time-field legend {
+  color: var(--ink);
+}
 .date-time-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+}
+.date-time-day,
+.date-time-clock {
   display: flex;
-  width: 100%;
-}
-.field .date-time-input input {
-  border-radius: 6px 0 0 6px;
+  flex-direction: column;
+  gap: 8px;
   min-width: 0;
-  flex: 1;
 }
-.date-time-input .p-datepicker-trigger {
-  background: var(--green);
-  border-color: var(--green);
-  width: 44px;
-  padding: 10px;
+.date-time-day > span,
+.date-time-caption {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.date-time-selects {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+.field .date-time-input input,
+.field .date-time-input select {
+  min-width: 0;
+  min-height: 48px;
+  font-size: 16px;
+}
+.date-time-selects select {
+  text-align: center;
+}
+@media (max-width: 560px) {
+  .date-time-input {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+  }
 }
 .p-datepicker {
   font-family: Arial, Helvetica, sans-serif;
@@ -2032,4 +2069,52 @@ legend {
   flex: 1;
   padding: 10px;
   min-width: 120px;
+}
+
+/* Confirmações de ações com SweetAlert2. */
+.swal2-popup.action-confirm {
+  width: min(30rem, calc(100vw - 2rem));
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  box-shadow: 0 24px 80px #1c3c2e26;
+}
+.action-confirm .action-confirm-title {
+  padding: 0.5rem 0.5rem 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.action-confirm .action-confirm-text {
+  margin: 1rem 0.5rem 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.action-confirm .action-confirm-actions {
+  gap: 12px;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.action-confirm-actions .button {
+  margin: 0;
+  justify-content: center;
+  white-space: normal;
+}
+.action-confirm .swal2-validation-message {
+  border-radius: 12px;
+  background: var(--peach);
+  color: var(--red);
+  font-size: 14px;
+}
+@media (max-width: 480px) {
+  .action-confirm-actions .button {
+    width: 100%;
+  }
 }

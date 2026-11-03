@@ -87,7 +87,7 @@ export function Personal({ token }: { token: string }) {
                     <>
                       <p>Seu amigo oculto é…</p>
                       <h2>
-                        {result.name} <span aria-hidden="true">✳</span>
+                        {result.name}
                       </h2>
                       <div className="result-detail">
                         <h3>Ideias para acertar no presente</h3>

@@ -239,6 +239,7 @@ export function Modal({
     <dialog
       ref={ref}
       className="modal"
+      aria-modal="true"
       onCancel={onClose}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -253,51 +254,5 @@ export function Modal({
       </div>
       {children}
     </dialog>
-  );
-}
-export function Confirm({
-  title,
-  text,
-  phrase,
-  onClose,
-  onConfirm,
-  busy = false,
-  error,
-}: {
-  title: string;
-  text: string;
-  phrase: string;
-  onClose: () => void;
-  onConfirm: (phrase: string) => Promise<void>;
-  busy?: boolean;
-  error?: string;
-}) {
-  const [value, setValue] = useState('');
-  return (
-    <Modal title={title} onClose={onClose}>
-      <p className="muted">{text}</p>
-      <label className="field">
-        Digite <strong>{phrase}</strong> para confirmar
-        <input
-          autoFocus
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          autoComplete="off"
-        />
-      </label>
-      {error && <Notice error>{error}</Notice>}
-      <div className="form-actions">
-        <Button className="button button-outline" onClick={onClose} disabled={busy}>
-          Cancelar
-        </Button>
-        <Button
-          className="button"
-          disabled={value !== phrase || busy}
-          onClick={() => void onConfirm(value)}
-        >
-          {busy ? <LoaderCircle className="spin" size={17} /> : null}Confirmar
-        </Button>
-      </div>
-    </Modal>
   );
 }
