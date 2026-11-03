@@ -26,6 +26,17 @@ type Transaction = Parameters<
   Parameters<Awaited<ReturnType<typeof database>>['transaction']>[0]
 >[0];
 
+function eventDataForType<T extends { type: string; minValue: number; maxValue: number }>(data: T) {
+  return data.type === 'SECRET' ? data : { ...data, minValue: 0, maxValue: 0 };
+}
+
+function participantDataForType<T extends { gifts: string[]; notes: string; wishes: string }>(
+  data: T,
+  event: Pick<Event, 'type'>,
+) {
+  return event.type === 'SECRET' ? data : { ...data, gifts: [], notes: '', wishes: '' };
+}
+
 function makeResults(event: Event, people: Participant[], rules: { a: string; b: string }[]) {
   try {
     return draw(
@@ -115,7 +126,7 @@ export function publicPerson(p: Participant) {
   };
 }
 export async function createEvent(input: unknown) {
-  const data = eventSchema.parse(input);
+  const data = eventDataForType(eventSchema.parse(input));
   if (new Date(data.deadline) <= new Date())
     throw new AppError('Escolha um prazo de inscrição no futuro.');
   const token = randomToken(),
@@ -159,7 +170,7 @@ export async function join(slug: string, input: unknown) {
     const credentials = await reserveAccessCode(tx, event.id, id);
     const [person] = await tx
       .insert(participants)
-      .values({ ...data, id, eventId: event.id, ...credentials })
+      .values({ ...participantDataForType(data, event), id, eventId: event.id, ...credentials })
       .returning();
     return person;
   });
@@ -260,15 +271,17 @@ export async function adminAction(token: string, input: Record<string, unknown>)
       return p;
     };
     if (action === 'update') {
-      const data = eventSchema.parse({
-        ...publicEvent(event),
-        deadline: event.deadline.toISOString(),
-        exchangeAt: event.exchangeAt.toISOString(),
-        ...z.record(z.string(), z.unknown()).parse(input.data),
-        type: event.type,
-        organizer: event.organizer,
-        name: event.name,
-      });
+      const data = eventDataForType(
+        eventSchema.parse({
+          ...publicEvent(event),
+          deadline: event.deadline.toISOString(),
+          exchangeAt: event.exchangeAt.toISOString(),
+          ...z.record(z.string(), z.unknown()).parse(input.data),
+          type: event.type,
+          organizer: event.organizer,
+          name: event.name,
+        }),
+      );
       if (
         event.startedAt &&
         (data.teamCount !== event.teamCount || data.winnerCount !== event.winnerCount)
@@ -280,7 +293,7 @@ export async function adminAction(token: string, input: Record<string, unknown>)
         .where(eq(events.id, event.id));
     } else if (action === 'add' || action === 'edit') {
       beforeStart();
-      const data = participantSchema.parse(input.data);
+      const data = participantDataForType(participantSchema.parse(input.data), event);
       if (action === 'add') {
         if (people.length >= 200) throw new AppError('Limite de 200 participantes.');
         await tx
@@ -416,10 +429,8 @@ export async function personalAction(token: string, input: Record<string, unknow
     if (input.action === 'update') {
       if (status(event) !== 'OPEN')
         throw new AppError('A edição encerrou junto com as inscrições.', 409);
-      await tx
-        .update(participants)
-        .set(participantSchema.parse(input.data))
-        .where(eq(participants.id, person.id));
+      const data = participantDataForType(participantSchema.parse(input.data), event);
+      await tx.update(participants).set(data).where(eq(participants.id, person.id));
       return { message: 'Suas preferências foram salvas.' };
     }
     if (input.action !== 'draw' && input.action !== 'reveal') throw new AppError('Ação inválida.');

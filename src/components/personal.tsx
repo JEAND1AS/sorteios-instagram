@@ -168,7 +168,7 @@ export function Personal({ token }: { token: string }) {
           <div className="card">
             <div className="card-heading">
               <div>
-                <h2>Suas pistas para o presente.</h2>
+                <h2>{event.type === 'SECRET' ? 'Suas pistas para o presente.' : 'Seus dados.'}</h2>
                 <p className="muted">
                   {event.status === 'OPEN'
                     ? 'Você pode atualizar seus dados enquanto as inscrições estiverem abertas.'
@@ -180,7 +180,8 @@ export function Personal({ token }: { token: string }) {
               key={participant.id}
               initial={participant}
               disabled={event.status !== 'OPEN'}
-              label="Salvar minhas preferências"
+              label={event.type === 'SECRET' ? 'Salvar minhas preferências' : 'Salvar meus dados'}
+              collectGiftPreferences={event.type === 'SECRET'}
               onSubmit={async (input) => {
                 await api(url, { action: 'update', data: input });
                 setMessage('Suas preferências foram salvas.');

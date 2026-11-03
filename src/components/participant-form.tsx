@@ -19,11 +19,13 @@ export function ParticipantForm({
   onSubmit,
   label = 'Confirmar minha participação',
   disabled = false,
+  collectGiftPreferences = true,
 }: {
   initial?: Partial<Person>;
   onSubmit: (value: ParticipantInput) => Promise<void>;
   label?: string;
   disabled?: boolean;
+  collectGiftPreferences?: boolean;
 }) {
   const [value, setValue] = useState<ParticipantInput>({
     name: initial?.name || '',
@@ -97,50 +99,54 @@ export function ParticipantForm({
           convite. Você também receberá um código de 4 números como alternativa de acesso. O
           resultado aparece apenas aqui no site.
         </Notice>
-        <fieldset>
-          <legend>
-            O que você gosta de ganhar? <span className="muted">(opcional)</span>
-          </legend>
-          <div className="checkbox-grid">
-            {GIFT_TYPES.map((gift) => (
-              <label className="gift-option" key={gift}>
-                <input
-                  type="checkbox"
-                  checked={value.gifts.includes(gift)}
-                  onChange={() =>
-                    update(
-                      'gifts',
-                      value.gifts.includes(gift)
-                        ? value.gifts.filter((g) => g !== gift)
-                        : [...value.gifts, gift],
-                    )
-                  }
-                />
-                {gift}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <label className="field">
-          Mais um pouquinho sobre você
-          <InputTextarea
-            maxLength={1000}
-            rows={3}
-            value={value.notes}
-            onChange={(e) => update('notes', e.target.value)}
-            placeholder="Tamanhos, restrições alimentares e outras pistas…"
-          />
-        </label>
-        <label className="field">
-          Sua lista de desejos <span className="muted">(opcional)</span>
-          <InputTextarea
-            maxLength={2000}
-            rows={3}
-            value={value.wishes}
-            onChange={(e) => update('wishes', e.target.value)}
-            placeholder="Ideias de presente e links para ajudar quem tirar você."
-          />
-        </label>
+        {collectGiftPreferences && (
+          <>
+            <fieldset>
+              <legend>
+                O que você gosta de ganhar? <span className="muted">(opcional)</span>
+              </legend>
+              <div className="checkbox-grid">
+                {GIFT_TYPES.map((gift) => (
+                  <label className="gift-option" key={gift}>
+                    <input
+                      type="checkbox"
+                      checked={value.gifts.includes(gift)}
+                      onChange={() =>
+                        update(
+                          'gifts',
+                          value.gifts.includes(gift)
+                            ? value.gifts.filter((g) => g !== gift)
+                            : [...value.gifts, gift],
+                        )
+                      }
+                    />
+                    {gift}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <label className="field">
+              Mais um pouquinho sobre você
+              <InputTextarea
+                maxLength={1000}
+                rows={3}
+                value={value.notes}
+                onChange={(e) => update('notes', e.target.value)}
+                placeholder="Tamanhos, restrições alimentares e outras pistas…"
+              />
+            </label>
+            <label className="field">
+              Sua lista de desejos <span className="muted">(opcional)</span>
+              <InputTextarea
+                maxLength={2000}
+                rows={3}
+                value={value.wishes}
+                onChange={(e) => update('wishes', e.target.value)}
+                placeholder="Ideias de presente e links para ajudar quem tirar você."
+              />
+            </label>
+          </>
+        )}
         {error && <Notice error>{error}</Notice>}
         <Button
           type="submit"

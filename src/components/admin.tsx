@@ -553,6 +553,7 @@ export function Admin({ token }: { token: string }) {
           <ParticipantForm
             initial={form.person}
             label={form.person ? 'Salvar participante' : 'Adicionar participante'}
+            collectGiftPreferences={event.type === 'SECRET'}
             onSubmit={async (value) => {
               await run({ action: form.person ? 'edit' : 'add', id: form.person?.id, data: value });
               setForm(null);

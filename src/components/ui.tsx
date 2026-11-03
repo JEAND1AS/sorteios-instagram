@@ -187,15 +187,19 @@ export function Badge({ status }: { status: EventView['status'] }) {
 export function EventSummary({ event }: { event: EventView }) {
   return (
     <div className="event-facts">
-      <div>
-        <Wallet size={19} />
-        <span>
-          Presente sugerido
-          <strong>
-            {event.maxValue ? `${money(event.minValue)} a ${money(event.maxValue)}` : 'Valor livre'}
-          </strong>
-        </span>
-      </div>
+      {event.type === 'SECRET' && (
+        <div>
+          <Wallet size={19} />
+          <span>
+            Presente sugerido
+            <strong>
+              {event.maxValue
+                ? `${money(event.minValue)} a ${money(event.maxValue)}`
+                : 'Valor livre'}
+            </strong>
+          </span>
+        </div>
+      )}
       <div>
         <CalendarDays size={19} />
         <span>

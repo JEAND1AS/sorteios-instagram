@@ -160,7 +160,7 @@ export function Invite({ slug }: { slug: string }) {
                 </div>
               </div>
               {mode === 'join' && event.status === 'OPEN' ? (
-                <ParticipantForm onSubmit={join} />
+                <ParticipantForm onSubmit={join} collectGiftPreferences={event.type === 'SECRET'} />
               ) : (
                 <form onSubmit={identify}>
                   <fieldset disabled={busy}>

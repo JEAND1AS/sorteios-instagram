@@ -292,6 +292,25 @@ test('sorteio simples e times seguem o mesmo começo e mostram apenas o resultad
     if (type === 'TEAMS') assert.ok(r.result.members!.length >= 2);
   }
 });
+test('sorteio simples e times não armazenam valores ou preferências de presente', async () => {
+  for (const type of ['RAFFLE', 'TEAMS']) {
+    const created = await createEvent({ ...eventInput, type, minValue: 5000, maxValue: 10000 });
+    const slug = tokenOf(created.invitePath);
+    const token = tokenOf((await join(slug, person(1))).personalPath);
+    const invitation = await getInvite(slug);
+    assert.equal(invitation.event.minValue, 0);
+    assert.equal(invitation.event.maxValue, 0);
+    let participation = await personal(token);
+    assert.deepEqual(participation.participant.gifts, []);
+    assert.equal(participation.participant.notes, '');
+    assert.equal(participation.participant.wishes, '');
+    await personalAction(token, { action: 'update', data: person(1) });
+    participation = await personal(token);
+    assert.deepEqual(participation.participant.gifts, []);
+    assert.equal(participation.participant.notes, '');
+    assert.equal(participation.participant.wishes, '');
+  }
+});
 test('encerrar bloqueia identificação e resultado; excluir remove os dados por cascata', async () => {
   const { admin, slug, tokens } = await group();
   await start(admin);

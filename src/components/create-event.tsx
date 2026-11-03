@@ -62,8 +62,8 @@ export function CreateEvent() {
   function payload() {
     return {
       ...draft,
-      minValue: Math.round(Number(draft.minValue) * 100),
-      maxValue: Math.round(Number(draft.maxValue) * 100),
+      minValue: draft.type === 'SECRET' ? Math.round(Number(draft.minValue) * 100) : 0,
+      maxValue: draft.type === 'SECRET' ? Math.round(Number(draft.maxValue) * 100) : 0,
       exchangeAt: new Date(draft.exchangeAt).toISOString(),
       deadline: new Date(draft.deadline).toISOString(),
     };
