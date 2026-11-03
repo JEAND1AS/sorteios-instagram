@@ -1,7 +1,8 @@
 'use client';
+import Link from 'next/link';
 import { Button } from './controls';
 import { useState } from 'react';
-import { Gift, LockKeyhole, ShieldCheck, Eye, RefreshCw, Shuffle } from 'lucide-react';
+import { ArrowLeft, Gift, LockKeyhole, ShieldCheck, Eye, RefreshCw, Shuffle } from 'lucide-react';
 import { api, type PersonalData, type Result } from '@/lib/client';
 import { Badge, CopyButton, EmptyError, EventSummary, Loading, Notice, useResource } from './ui';
 import { ParticipantForm } from './participant-form';
@@ -32,7 +33,12 @@ export function Personal({ token }: { token: string }) {
     }
   }
   return (
-    <div className="container">
+    <div className="container participant-page">
+      <div className="participant-page-back">
+        <Link className="back-link" href={data.invitePath}>
+          <ArrowLeft size={15} /> Voltar ao convite
+        </Link>
+      </div>
       <div className="invite-heading">
         <span>
           <Badge status={event.status} />
@@ -86,9 +92,7 @@ export function Personal({ token }: { token: string }) {
                   {result.kind === 'SECRET' ? (
                     <>
                       <p>Seu amigo oculto é…</p>
-                      <h2>
-                        {result.name}
-                      </h2>
+                      <h2>{result.name}</h2>
                       <div className="result-detail">
                         <h3>Ideias para acertar no presente</h3>
                         <div className="gift-tags">

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { Check, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
 import {
   api,
   rememberParticipation,
@@ -14,7 +14,9 @@ import { Badge, CopyButton, EmptyError, EventSummary, Loading, Notice, useResour
 import { ParticipantForm, type ParticipantInput } from './participant-form';
 import { Button } from './controls';
 export function Invite({ slug }: { slug: string }) {
-  const { data, error } = useResource<{ event: EventView; count: number }>('/api/invite/' + slug);
+  const { data, error, refresh } = useResource<{ event: EventView; count: number }>(
+    '/api/invite/' + slug,
+  );
   const [joined, setJoined] = useState<{ personalPath: string; accessCode: string } | null>(null),
     [saved, setSaved] = useState<SavedParticipation | null>(null),
     [mode, setMode] = useState<'join' | 'identify'>('join');
@@ -37,8 +39,16 @@ export function Invite({ slug }: { slug: string }) {
       '/api/invite/' + slug,
       input,
     );
-    rememberParticipation(slug, { name: input.name.trim(), personalPath: response.personalPath });
+    const participation = { name: input.name.trim(), personalPath: response.personalPath };
+    rememberParticipation(slug, participation);
+    setSaved(participation);
     setJoined(response);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function joinAnother() {
+    setJoined(null);
+    setMode('join');
+    void refresh();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   async function identify(e: FormEvent) {
@@ -80,9 +90,14 @@ export function Invite({ slug }: { slug: string }) {
           <div className="secret-link">
             <CopyButton value={joined.personalPath} label="Copiar meu acesso" />
           </div>
-          <Link href={joined.personalPath} className="button">
-            Abrir minha página <ArrowRight size={16} />
-          </Link>
+          <div className="success-actions">
+            <Button className="button button-outline" onClick={joinAnother}>
+              <ArrowLeft size={16} /> Cadastrar outra pessoa
+            </Button>
+            <Link href={joined.personalPath} className="button">
+              Abrir minha página <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </div>
     );

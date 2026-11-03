@@ -33,9 +33,6 @@ export default function Home() {
             melhor: estar junto.
           </p>
           <div className="hero-actions">
-            <Link href="/novo" className="button button-large">
-              Criar meu sorteio <ArrowUpRight size={19} />
-            </Link>
             <Link href="/como-funciona" className="text-link">
               Como funciona <ArrowRight size={17} />
             </Link>
@@ -169,11 +166,6 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
-      <section className="container home-bottom">
-        <Heart size={19} />
-        <p>O melhor presente é ter com quem compartilhar.</p>
-        <Sparkles size={20} />
       </section>
     </>
   );

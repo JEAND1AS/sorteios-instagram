@@ -41,9 +41,6 @@ export default function Page() {
         o código poderá acessar aquela participação. Veja os detalhes em{' '}
         <Link href="/privacidade">Privacidade</Link>.
       </p>
-      <Link href="/novo" className="button">
-        Criar meu evento
-      </Link>
     </div>
   );
 }

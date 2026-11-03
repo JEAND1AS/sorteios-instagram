@@ -72,9 +72,6 @@ export function GiftArt() {
       <span className="art-note note-top">
         um segredo bom de guardar <span>↘</span>
       </span>
-      <span className="art-sticker">
-        <span>✳</span> Feito para aproximar.
-      </span>
     </div>
   );
 }

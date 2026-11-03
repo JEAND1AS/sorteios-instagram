@@ -395,6 +395,7 @@ export async function personal(token: string) {
   return {
     event: publicEvent(event),
     participant: publicPerson(person),
+    invitePath: '/convite/' + event.slug,
     accessCode: person.accessCodeHash
       ? participantAccessCode(person.eventId, person.id, person.nonce)
       : null,

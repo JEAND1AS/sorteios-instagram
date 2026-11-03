@@ -52,8 +52,8 @@ test('convite compartilhado, cadastro, fechamento, começo e identificação em 
   ];
   const links: string[] = [];
   const accessCodes: string[] = [];
-  for (const [name, email, phone] of people) {
-    await page.goto(created.invitePath);
+  for (const [index, [name, email, phone]] of people.entries()) {
+    if (index === 0) await page.goto(created.invitePath);
     await page.getByLabel('Nome completo *', { exact: true }).fill(name);
     await page.getByLabel('Email *', { exact: true }).fill(email);
     await page.getByLabel('Celular com DDD *', { exact: true }).fill(phone);
@@ -67,6 +67,10 @@ test('convite compartilhado, cadastro, fechamento, começo e identificação em 
     links.push(registration.personalPath);
     accessCodes.push(registration.accessCode);
     await expect(page.getByRole('heading', { name: 'Presença confirmada!' })).toBeVisible();
+    if (index < people.length - 1) {
+      await page.getByRole('button', { name: 'Cadastrar outra pessoa', exact: true }).click();
+      await expect(page.getByRole('heading', { name: 'Vem fazer parte.' })).toBeVisible();
+    }
   }
   await page.goto(created.adminPath);
   await page.getByRole('tab', { name: 'Combinados', exact: true }).click();
@@ -142,6 +146,9 @@ test('convite compartilhado, cadastro, fechamento, começo e identificação em 
   await visitor.getByLabel('Celular com DDD *', { exact: true }).fill('(11) 99999-0001');
   await visitor.getByRole('button', { name: 'Entrar na minha página' }).click();
   await expect(visitor).toHaveURL(/\/participante\//);
+  await expect(
+    visitor.getByRole('link', { name: 'Voltar ao convite', exact: true }),
+  ).toHaveAttribute('href', created.invitePath);
   await visitor.goto(created.invitePath);
   await visitor.getByRole('button', { name: 'Usar meu código', exact: true }).click();
   await visitor.getByLabel('Código de acesso *', { exact: true }).fill(accessCodes[0]);

@@ -29,7 +29,12 @@ export type AdminData = {
   participants: Person[];
   exclusions: { id: string; a: string; b: string }[];
 };
-export type PersonalData = { event: EventView; participant: Person; accessCode: string | null };
+export type PersonalData = {
+  event: EventView;
+  participant: Person;
+  accessCode: string | null;
+  invitePath: string;
+};
 export type Result =
   | { kind: 'SECRET'; name: string; gifts: string[]; notes: string; wishes: string }
   | { kind: 'RAFFLE'; winner: boolean; position: number | null }

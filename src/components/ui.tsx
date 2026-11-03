@@ -22,8 +22,7 @@ export function Brand() {
       <span className="brand-mark">
         <Gift size={23} strokeWidth={1.7} />
       </span>
-      entre<span className="brand-serif">nós</span>
-      <span className="brand-dot">✳</span>
+      Entre<span className="brand-serif">nós</span>
     </Link>
   );
 }
