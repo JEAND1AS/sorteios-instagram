@@ -36,7 +36,7 @@ Abra [http://localhost:3000](http://localhost:3000). Sem `DATABASE_URL`, o desen
 1. No projeto Supabase, clique em **Connect → Transaction pooler** e copie a conexão da porta **6543** para `DATABASE_URL`.
 2. Substitua o exemplo de senha pela senha real do banco, **sem os colchetes**. Codifique caracteres especiais: `@` vira `%40`, `#` vira `%23` e `%` vira `%25`. A URL começa com `postgresql://`, não com `https://`.
 3. Opcionalmente, copie a conexão **Session pooler** da porta **5432** para `DIRECT_URL`, usando a mesma senha. Ela é usada somente pelo comando de migração.
-4. Gere duas chaves independentes com `npm run keys` e coloque os valores em `TOKEN_SECRET` e `DRAW_ENCRYPTION_KEY`. Não publique nem compartilhe `.env.local`.
+4. Gere três segredos independentes com `npm run keys` e coloque os valores em `TOKEN_SECRET`, `DRAW_ENCRYPTION_KEY` e `CRON_SECRET`. Não publique nem compartilhe `.env.local`.
 5. Valide a conexão e aplique as migrações:
 
 ```bash
@@ -77,10 +77,13 @@ Apontar `DATABASE_URL` para o Supabase não transfere os eventos criados no banc
 | `APP_URL`             | URL HTTPS do site, sem barra final                     |
 | `TOKEN_SECRET`        | Chave de 64 caracteres hexadecimais                    |
 | `DRAW_ENCRYPTION_KEY` | Outra chave independente de 64 caracteres hexadecimais |
+| `CRON_SECRET`         | Segredo aleatório do agendamento diário da Vercel      |
 
-Nunca use o prefixo `NEXT_PUBLIC_` para essas credenciais. Não são necessárias variáveis SMTP, Brevo, email ou WhatsApp. Guarde as duas chaves: trocar a primeira invalida links e códigos pessoais; trocar a segunda impede ler resultados antigos.
+Nunca use o prefixo `NEXT_PUBLIC_` para essas credenciais. Não são necessárias variáveis SMTP, Brevo, email ou WhatsApp. Guarde os três segredos: trocar o primeiro invalida links e códigos pessoais; trocar o segundo impede ler resultados antigos; trocar o terceiro exige atualizar `CRON_SECRET` na Vercel.
 
-A Vercel Hobby atende ao uso pessoal e não comercial. Use um projeto Supabase Free para evitar cobrança. O Supabase pode pausar projetos com pouca atividade por sete dias: antes de compartilhar um convite depois de um período parado, abra o painel e use **Resume project**, se necessário. Não há cron ou mecanismo de manutenção artificial de atividade. Veja os limites nos sites da [Vercel](https://vercel.com/docs/plans/hobby) e do [Supabase](https://supabase.com/pricing).
+A Vercel Hobby atende ao uso pessoal e não comercial. Use um projeto Supabase Free para evitar cobrança. O arquivo `vercel.json` chama diariamente, às 12:00 UTC, o endpoint protegido `/api/cron/keep-alive`. Em uma execução ele cria um evento fechado com um participante sintético; na execução seguinte exclui o evento e o participante por cascata. A alternância usa um bloqueio transacional, então chamadas simultâneas não deixam dados duplicados. Configure `CRON_SECRET` somente no servidor; a Vercel o envia como `Authorization: Bearer <segredo>`.
+
+Essa atividade reduz a chance de pausa, mas o Supabase não garante disponibilidade contínua no plano Free: projetos com pouca atividade podem ser pausados após sete dias. Se isso acontecer, abra o painel e use **Resume project**. Para garantia contra pausa por inatividade, use um plano pago. Veja os limites nos sites da [Vercel](https://vercel.com/docs/cron-jobs/usage-and-pricing) e do [Supabase](https://supabase.com/docs/guides/platform/free-project-pausing).
 
 O site também pode ser hospedado como aplicação Node.js usando `npm run build` e `npm start`. Uma futura mudança para Discloud ou outro provedor não exige trocar o PostgreSQL, desde que a hospedagem suporte a versão de Node e o Next.js utilizados.
 
